@@ -1,5 +1,5 @@
 {
-  "name": "sf-forms",
+  "name": "@for9a/sf-forms",
   "version": "1.0.0",
   "description": "A dynamic form component with conditional logic, multiple question types, and multi-language support",
   "type": "module",

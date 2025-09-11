@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { gql, useQuery, useMutation, ApolloProvider } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faSave, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useSession } from 'next-auth/react';
 import { QuestionDisplay } from './QuestionDisplay.jsx';
 import { GET_FORM_WITH_ANSWERS } from '../graphql/queries.js';
+import { createApolloClient } from '../config/apollo.js';
 import '../styles/form-display.scss';
 
 // GraphQL mutation to save form answers
@@ -96,6 +97,7 @@ function FormDisplay({
     },
   });
   
+  console.log("data",data)
   // Refetch data when session becomes available
   useEffect(() => {
     if (session?.user?.token && id && entity_id) {

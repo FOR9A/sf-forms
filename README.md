@@ -32,20 +32,21 @@ npm install react react-dom @apollo/client next next-translate next-auth
 
 ```jsx
 import React from 'react';
-import { FormDisplay } from '@your-org/dynamic-form';
+import { FormDisplayWrapper } from '@for9a/sf-forms';
 
-function MyFormPage() {
+function MyForm() {
   return (
-    <FormDisplay
+    <FormDisplayWrapper
       formId="your-form-id"
       entityId="your-entity-id"
+      graphqlEndpoint="http://127.0.0.1:8000/graphql"
       onSaveSuccess={(data) => console.log('Form saved:', data)}
       onSaveError={(error) => console.error('Save error:', error)}
     />
   );
 }
 
-export default MyFormPage;
+export default MyForm;
 ```
 
 ## Advanced Usage

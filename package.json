@@ -1,6 +1,6 @@
 {
   "name": "@for9a/sf-forms",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A dynamic form component with conditional logic, multiple question types, and multi-language support",
   "type": "module",
   "main": "dist/index.js",
@@ -32,6 +32,7 @@
     }
   },
   "dependencies": {
+    "@apollo/client": "^3.7.10",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",

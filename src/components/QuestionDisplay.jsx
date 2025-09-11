@@ -704,3 +704,5 @@ export const QuestionDisplay = ({
       );
   }
 };
+
+export default QuestionDisplay;

@@ -1,6 +1,6 @@
 {
   "name": "@for9a/sf-forms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A dynamic form component with conditional logic, multiple question types, and multi-language support",
   "type": "module",
   "main": "dist/index.js",
@@ -19,11 +19,13 @@
   },
   "peerDependencies": {
     "@apollo/client": ">=3.0.0",
-    "next": ">=10.0.0",
-    "next-auth": ">=4.0.0",
-    "next-translate": ">=1.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "@apollo/client": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.0",

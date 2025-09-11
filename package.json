@@ -76,6 +76,6 @@
     "url": "git+https://github.com/FOR9A/sf-forms.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   }
 }

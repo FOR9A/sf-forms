@@ -19,11 +19,15 @@
   },
   "peerDependencies": {
     "@apollo/client": ">=3.0.0",
+    "next": ">=12.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
   "peerDependenciesMeta": {
     "@apollo/client": {
+      "optional": true
+    },
+    "next": {
       "optional": true
     }
   },

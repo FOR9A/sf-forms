@@ -97,7 +97,6 @@ function FormDisplay({
     },
   });
   
-  console.log("data",data)
   // Refetch data when session becomes available
   useEffect(() => {
     if (session?.user?.token && id && entity_id) {
@@ -527,7 +526,7 @@ function FormDisplay({
       </div>
     );
   }
-
+console.log("formData",formData)
   return (
     <div>
       <div className={`${cssClasses.formContainer || 'form-container'}`}>
@@ -593,7 +592,7 @@ function FormDisplay({
           </div>
         ) : (
           <div className={`${cssClasses.noData || 'no-data'}`}>
-            <h1>ssssssss</h1>
+            <h1>kkkkkkk</h1>
             <p>{t('no-form-data')}</p>
           </div>
         )}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { getCountryList, getCityList } from '../utils/helpers.js';
+import styles from '../styles/form-display.module.scss';
 
 // Question type definitions
 export const QUESTION_TYPES = [
@@ -233,65 +234,65 @@ export const QuestionDisplay = ({
   switch (question.type) {
     case 'header':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
           <h1>{label}</h1>
         </div>
       );
 
     case 'subheader':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
           <h2>{label}</h2>
         </div>
       );
 
     case 'paragraph':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
           <p>{label}</p>
         </div>
       );
 
     case 'text':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <input
               type="text"
-              className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+              className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
               value={answerData.value || ''}
               onChange={(e) => onInputChange(question.id, e.target.value)}
               placeholder={placeholder}
             />
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>{answerData.value || '-'}</div>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>{answerData.value || '-'}</div>
           )}
           {validationErrors[question.id] && (
-            <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+            <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
           )}
         </div>
       );
 
     case 'textarea':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
               <textarea
-                className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+                className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
                 value={answerData.value || ''}
                 onChange={(e) => onInputChange(question.id, e.target.value)}
                 placeholder={placeholder}
                 rows={5}
               />
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>
               {answerData.value ? <div>{answerData.value}</div> : '-'}
             </div>
           )}
@@ -300,23 +301,23 @@ export const QuestionDisplay = ({
 
     case 'email':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
               <input
                 type="email"
-                className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+                className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
                 value={answerData.value || ''}
                 onChange={(e) => onInputChange(question.id, e.target.value)}
                 placeholder={placeholder}
               />
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>
               {answerData.value ? (
                 <a href={`mailto:${answerData.value}`}>{answerData.value}</a>
               ) : '-'}
@@ -327,35 +328,35 @@ export const QuestionDisplay = ({
 
     case 'number':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
               <input
                 type="number"
-                className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+                className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
                 value={answerData.value || ''}
                 onChange={(e) => onInputChange(question.id, e.target.value)}
                 placeholder={placeholder}
               />
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>{answerData.value || '-'}</div>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>{answerData.value || '-'}</div>
           )}
         </div>
       );
 
     case 'select':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
               <select
-                className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+                className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
                 value={answerData.selectedOption || ''}
                 onChange={(e) => onInputChange(question.id, e.target.value, 'selectedOption')}
               >
@@ -367,11 +368,11 @@ export const QuestionDisplay = ({
                 ))}
               </select>
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>
               {answerData.selectedOption ? (
                 (() => {
                   const option = question.options?.find(opt => opt.id === answerData.selectedOption);
@@ -389,13 +390,13 @@ export const QuestionDisplay = ({
 
     case 'radio':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
-              <div className={`${cssClasses.radioGroup || 'radio-group'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}>
+              <div className={`${cssClasses.radioGroup || styles['sf-radio-group']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}>
                 {question.options?.map(option => (
-                  <div key={option.id} className={cssClasses.radioOption || 'radio-option'}>
+                  <div key={option.id} className={cssClasses.radioOption || styles['sf-radio-option']}>
                     <input
                       type="radio"
                       id={`option-${option.id}`}
@@ -409,11 +410,11 @@ export const QuestionDisplay = ({
                 ))}
               </div>
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>
               {answerData.selectedOption ? (
                 (() => {
                   const option = question.options?.find(opt => opt.id === answerData.selectedOption);
@@ -431,13 +432,13 @@ export const QuestionDisplay = ({
 
     case 'checkbox':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
-              <div className={`${cssClasses.checkboxGroup || 'checkbox-group'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}>
+              <div className={`${cssClasses.checkboxGroup || styles['sf-checkbox-group']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}>
                 {question.options?.map(option => (
-                  <div key={option.id} className={cssClasses.checkboxOption || 'checkbox-option'}>
+                  <div key={option.id} className={cssClasses.checkboxOption || styles['sf-checkbox-option']}>
                     <input
                       type="checkbox"
                       id={`option-${option.id}`}
@@ -451,13 +452,13 @@ export const QuestionDisplay = ({
                 ))}
               </div>
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>
               {answerData.selectedOptions?.length ? (
-                <ul className={cssClasses.optionsList || 'options-list'}>
+                <ul className={cssClasses.optionsList || styles['sf-options-list']}>
                   {answerData.selectedOptions.map(optionId => {
                     const option = question.options?.find(opt => opt.id === optionId);
                     return option ? (
@@ -473,14 +474,14 @@ export const QuestionDisplay = ({
 
     case 'file':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
-              <div className={`${cssClasses.fileInputWrapper || 'file-input-wrapper'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}>
+              <div className={`${cssClasses.fileInputWrapper || styles['sf-file-input-wrapper']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}>
                 <input
                   type="file"
-                  className={cssClasses.fileInput || 'file-input'}
+                  className={cssClasses.fileInput || styles['sf-file-input']}
                   onChange={(e) => {
                     const file = e.target.files[0];
                     if (file) {
@@ -490,26 +491,26 @@ export const QuestionDisplay = ({
                   disabled={uploadingFile}
                 />
                 {uploadingFile && (
-                  <div className={cssClasses.uploadingFile || 'uploading-file'}>
+                  <div className={cssClasses.uploadingFile || styles['sf-uploading-file']}>
                     Uploading file... {uploadProgress > 0 ? `${uploadProgress}%` : ''}
                   </div>
                 )}
                 {answerData.filePath && (
-                  <div className={cssClasses.uploadedFile || 'uploaded-file'}>
-                    <a href={answerData.filePath} target="_blank" rel="noopener noreferrer" className={cssClasses.fileLink || 'file-link'}>
+                  <div className={cssClasses.uploadedFile || styles['sf-uploaded-file']}>
+                    <a href={answerData.filePath} target="_blank" rel="noopener noreferrer" className={cssClasses.fileLink || styles['sf-file-link']}>
                       {'View uploaded -> ' + answerData.fileName || 'View uploaded file'}
                     </a>
                   </div>
                 )}
               </div>
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>
               {answerData.filePath ? (
-                <a href={answerData.filePath} target="_blank" rel="noopener noreferrer" className={cssClasses.fileLink || 'file-link'}>
+                <a href={answerData.filePath} target="_blank" rel="noopener noreferrer" className={cssClasses.fileLink || styles['sf-file-link']}>
                   {answerData.fileName || 'Download File'}
                 </a>
               ) : '-'}
@@ -520,22 +521,22 @@ export const QuestionDisplay = ({
 
     case 'date':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
               <input
                 type="date"
-                className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+                className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
                 value={answerData.value || getDefaultDateValue()}
                 onChange={(e) => onInputChange(question.id, e.target.value)}
               />
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>
               {answerData.value ? formatDateValue(answerData.value) : '-'}
             </div>
           )}
@@ -544,36 +545,36 @@ export const QuestionDisplay = ({
 
     case 'time':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
               <input
                 type="time"
-                className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+                className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
                 value={answerData.value || ''}
                 onChange={(e) => onInputChange(question.id, e.target.value)}
               />
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>{answerData.value || '-'}</div>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>{answerData.value || '-'}</div>
           )}
         </div>
       );
 
     case 'country':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
           <label htmlFor="country" style={{ marginBottom: '10px' }}>
-            {label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}
+            {label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}
           </label>
           {editMode ? (
             <>
               <select
-                className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+                className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
                 value={country}
                 onChange={(event) => {
                   const selectedCountryValue = event.target.value;
@@ -610,11 +611,11 @@ export const QuestionDisplay = ({
                 ))}
               </select>
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>
               {answerData.value || '-'}
             </div>
           )}
@@ -623,14 +624,14 @@ export const QuestionDisplay = ({
 
     case 'city':
       return (
-        <div className={cssClasses.formField || 'form-field'}>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
           <label htmlFor="city" style={{ marginBottom: '10px' }}>
-            {label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}
+            {label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}
           </label>
           {editMode ? (
             <>
               <select
-                className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+                className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
                 value={answerData.selectedOption || ''}
                 onChange={(e) => {
                   const selectedCityId = e.target.value;
@@ -666,14 +667,14 @@ export const QuestionDisplay = ({
                 ) : null}
               </select>
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
               {loadingCities && (
-                <div className={cssClasses.helperText || 'helper-text'}>{t('loading-cities')}</div>
+                <div className={cssClasses.helperText || styles['sf-helper-text']}>{t('loading-cities')}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>
               {answerData.value || '-'}
             </div>
           )}
@@ -682,23 +683,23 @@ export const QuestionDisplay = ({
 
     default:
       return (
-        <div className={cssClasses.formField || 'form-field'}>
-          <label>{label}{question.required && <span className={cssClasses.required || 'required'}>*</span>}</label>
+        <div className={cssClasses.formField || styles['sf-form-field']}>
+          <label>{label}{question.required && <span className={cssClasses.required || styles['sf-required']}>*</span>}</label>
           {editMode ? (
             <>
               <input
                 type="text"
-                className={`${cssClasses.inputField || 'input-field'} ${validationErrors[question.id] ? (cssClasses.inputError || 'input-error') : ''}`}
+                className={`${cssClasses.inputField || styles['sf-input-field']} ${validationErrors[question.id] ? (cssClasses.inputError || styles['sf-input-error']) : ''}`}
                 value={answerData.value || ''}
                 onChange={(e) => onInputChange(question.id, e.target.value)}
                 placeholder={placeholder}
               />
               {validationErrors[question.id] && (
-                <div className={cssClasses.errorMessage || 'error-message'}>{validationErrors[question.id]}</div>
+                <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
             </>
           ) : (
-            <div className={cssClasses.answerValue || 'answer-value'}>{answerData.value || '-'}</div>
+            <div className={cssClasses.answerValue || styles['sf-answer-value']}>{answerData.value || '-'}</div>
           )}
         </div>
       );

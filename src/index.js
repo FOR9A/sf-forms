@@ -6,5 +6,4 @@ export * from './graphql/queries.js';
 export * from './utils/helpers.js';
 export { createApolloClient } from './config/apollo.js';
 
-// Export styles
-import './styles/form-display.scss';
+// CSS is now imported as modules directly in components

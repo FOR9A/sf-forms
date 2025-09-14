@@ -29,7 +29,7 @@ try {
 }
 import QuestionDisplay from './QuestionDisplay.jsx';
 import { GET_FORM_WITH_ANSWERS } from '../graphql/queries.js';
-import '../styles/form-display.scss';
+import styles from '../styles/form-display.module.scss';
 
 // GraphQL mutation to save form answers
 const ADD_UPDATE_FORM_ANSWER = gql`
@@ -567,7 +567,7 @@ function FormDisplay({
 
   if (loading) {
     return (
-      <div className={`${cssClasses.loadingContainer || 'loading-container'}`}>
+      <div className={`${cssClasses.loadingContainer || styles['sf-loading-container']}`}>
         <FontAwesomeIcon icon={faSpinner} spin size="2x" />
         <p>{t('loading')}</p>
       </div>
@@ -576,7 +576,7 @@ function FormDisplay({
 
   if (error) {
     return (
-      <div className={`${cssClasses.errorContainer || 'error-container'}`}>
+      <div className={`${cssClasses.errorContainer || styles['sf-error-container']}`}>
         <h2>{t('error-loading-form')}</h2>
         <p>{error.message}</p>
       </div>
@@ -585,11 +585,11 @@ function FormDisplay({
 console.log("formData",formData)
   return (
     <div>
-      <div className={`${cssClasses.formContainer || 'form-container'}`}>
+      <div className={`${cssClasses.formContainer || styles['sf-form-container']}`}>
         {formData ? (
-          <div className={`${cssClasses.form || 'form'}`}>
-            <form onSubmit={handleSubmit} className="form">
-              <div className={`${cssClasses.formRows || 'form-rows'}`}>
+          <div className={`${cssClasses.form || styles['sf-form']}`}>
+            <form onSubmit={handleSubmit}>
+              <div className={`${cssClasses.formRows || styles['sf-form-rows']}`}>
                 {formData.questions
                   .filter(question => {
                     if (question.is_user_visible === false) return false;
@@ -597,7 +597,7 @@ console.log("formData",formData)
                     return visibleQuestions.includes(question.id);
                   })
                   .map(question => (
-                    <div className={`${cssClasses.formRow || 'form-row'}`} key={question.id}>
+                    <div className={`${cssClasses.formRow || styles['sf-form-row']}`} key={question.id}>
                       <QuestionDisplay
                         question={question}
                         locale={locale}
@@ -617,7 +617,7 @@ console.log("formData",formData)
               {editMode && (
                 <button
                   type="submit"
-                  className={`${cssClasses.submitButton || 'btn-primary'} ${saveLoading ? 'loading' : ''}`}
+                  className={`${cssClasses.submitButton || styles['sf-btn-primary']} ${saveLoading ? styles['sf-loading'] : ''}`}
                   disabled={saveLoading}
                 >
                   {saveLoading && <FontAwesomeIcon icon={faSpinner} size="sm" />}
@@ -626,7 +626,7 @@ console.log("formData",formData)
               )}
 
               {saveStatus && (
-                <div className={`${cssClasses.saveStatus || 'save-status'}`}>
+                <div className={`${cssClasses.saveStatus || styles['sf-save-status']} ${saveStatus === 'success' ? styles['sf-success'] : saveStatus === 'error' ? styles['sf-error'] : styles['sf-saving']}`}>
                   {saveStatus === 'success' && (
                     <>
                       <FontAwesomeIcon icon={faCheck} size="sm" />
@@ -647,8 +647,7 @@ console.log("formData",formData)
             </form>
           </div>
         ) : (
-          <div className={`${cssClasses.noData || 'no-data'}`}>
-            <h1>ddddd</h1>
+          <div className={`${cssClasses.noData || styles['sf-no-data']}`}>
             <p>{t('no-form-data')}</p>
           </div>
         )}

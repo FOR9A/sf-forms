@@ -1,28 +1,42 @@
 // Helper functions for country and city data
-export const getCountryList = async ({ lang = 'en' } = {}) => {
+export const getCountryList = async ({ lang = "en" }) => {
   try {
-    // This should be replaced with your actual API endpoint
-    const response = await fetch(`/api/countries?lang=${lang}`);
+    // Use fetch API for compatibility
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://dev-api.souqfann.com';
+    const response = await fetch(`${apiBaseUrl}/site/get-country`, {
+      headers: {
+        LANG: lang,
+      },
+    });
+    
     if (!response.ok) {
       throw new Error('Failed to fetch countries');
     }
+    
     const data = await response.json();
-    return data;
+    return data.data.countries;
   } catch (error) {
     console.error('Error fetching countries:', error);
     return [];
   }
 };
 
-export const getCityList = async ({ country, lang = 'en' } = {}) => {
+export const getCityList = async ({ country = false, lang = "en" }) => {
   try {
-    // This should be replaced with your actual API endpoint
-    const response = await fetch(`/api/cities?country=${country}&lang=${lang}`);
+    // Use fetch API for compatibility
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://dev-api.souqfann.com';
+    const response = await fetch(`${apiBaseUrl}/site/get-city?country=${country}`, {
+      headers: {
+        LANG: lang,
+      },
+    });
+    
     if (!response.ok) {
       throw new Error('Failed to fetch cities');
     }
+    
     const data = await response.json();
-    return data;
+    return data.data.cities;
   } catch (error) {
     console.error('Error fetching cities:', error);
     return [];

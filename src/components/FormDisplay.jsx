@@ -7,7 +7,6 @@ import { faSpinner, faSave, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useSession } from 'next-auth/react';
 import { QuestionDisplay } from './QuestionDisplay.jsx';
 import { GET_FORM_WITH_ANSWERS } from '../graphql/queries.js';
-import { createApolloClient } from '../config/apollo.js';
 import '../styles/form-display.scss';
 
 // GraphQL mutation to save form answers
@@ -80,15 +79,28 @@ function FormDisplay({
     }
   });
 
+  // Debug logging for query parameters
+  console.log('FormDisplay Debug - Query Parameters:', {
+    id,
+    entity_id,
+    sessionToken: session?.user?.token,
+    sessionStatus: status,
+    skipCondition: !id || !entity_id || !session?.user?.token
+  });
+
   // Fetch form data with answers
   const { loading, error, data, refetch } = useQuery(GET_FORM_WITH_ANSWERS, {
     variables: { form_id: id, entity_id: entity_id, preview: false },
     skip: !id || !entity_id || !session?.user?.token,
     onCompleted: (data) => {
+      console.log('GET_FORM_WITH_ANSWERS completed successfully:', data);
       if (data?.getFormWithAnswers) {
         setFormData(data.getFormWithAnswers);
         initializeFormAnswers(data.getFormWithAnswers);
       }
+    },
+    onError: (error) => {
+      console.error('GET_FORM_WITH_ANSWERS error:', error);
     },
     context: {
       headers: {

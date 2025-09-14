@@ -1,11 +1,33 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import useTranslation from 'next-translate/useTranslation';
+
+// Handle both next-translate and next-translate-plugin
+let useTranslation;
+try {
+  useTranslation = require('next-translate/useTranslation').default;
+} catch (error) {
+  // Fallback implementation if the import fails
+  useTranslation = () => ({
+    t: (key) => key,
+    lang: 'en'
+  });
+}
 import { gql, useQuery, useMutation, ApolloProvider } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faSave, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { useSession } from 'next-auth/react';
-import { QuestionDisplay } from './QuestionDisplay.jsx';
+// Make next-auth optional
+let useSession;
+try {
+  const nextAuth = require('next-auth/react');
+  useSession = nextAuth.useSession;
+} catch (error) {
+  // Fallback if next-auth is not available
+  useSession = () => ({
+    data: null,
+    status: 'unauthenticated'
+  });
+}
+import QuestionDisplay from './QuestionDisplay.jsx';
 import { GET_FORM_WITH_ANSWERS } from '../graphql/queries.js';
 import '../styles/form-display.scss';
 
@@ -85,13 +107,22 @@ function FormDisplay({
     entity_id,
     sessionToken: session?.user?.token,
     sessionStatus: status,
-    skipCondition: !id || !entity_id || !session?.user?.token
+    skipCondition: !id || !entity_id || !session?.user?.token,
+    skipReasons: {
+      noId: !id,
+      noEntityId: !entity_id,
+      noToken: !session?.user?.token,
+      sessionData: session
+    }
   });
+
+  // Additional debugging for useQuery execution
+  console.log('FormDisplay Debug - useQuery will be skipped:', !id || !entity_id || !session?.user?.token);
 
   // Fetch form data with answers
   const { loading, error, data, refetch } = useQuery(GET_FORM_WITH_ANSWERS, {
     variables: { form_id: id, entity_id: entity_id, preview: false },
-    skip: !id || !entity_id || !session?.user?.token,
+    
     onCompleted: (data) => {
       console.log('GET_FORM_WITH_ANSWERS completed successfully:', data);
       if (data?.getFormWithAnswers) {
@@ -109,10 +140,23 @@ function FormDisplay({
     },
   });
   
-  // Refetch data when session becomes available
+  // Monitor query conditions and refetch when they become available
   useEffect(() => {
+    console.log('FormDisplay Debug - useEffect triggered with conditions:', {
+      hasSession: !!session,
+      hasToken: !!session?.user?.token,
+      hasId: !!id,
+      hasEntityId: !!entity_id,
+      canExecuteQuery: !!(session?.user?.token && id && entity_id)
+    });
+
     if (session?.user?.token && id && entity_id) {
-      refetch();
+      console.log('FormDisplay Debug - Attempting to refetch query...');
+      refetch().then((result) => {
+        console.log('FormDisplay Debug - Refetch result:', result);
+      }).catch((error) => {
+        console.error('FormDisplay Debug - Refetch error:', error);
+      });
     }
   }, [session, id, entity_id, refetch]);
 
@@ -604,7 +648,7 @@ console.log("formData",formData)
           </div>
         ) : (
           <div className={`${cssClasses.noData || 'no-data'}`}>
-            <h1>kkkkkkk</h1>
+            <h1>ddddd</h1>
             <p>{t('no-form-data')}</p>
           </div>
         )}

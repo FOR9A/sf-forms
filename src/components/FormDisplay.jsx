@@ -50,12 +50,13 @@ function FormDisplay({
   onSaveSuccess,
   onSaveError,
   customValidation,
-  readOnly = false 
+  readOnly = false ,
+  token,
+  locale
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { t } = useTranslation('form');
-  const { locale } = router;
   
   // Use props or fallback to router query
   const id = formId || router.query.id;
@@ -96,7 +97,7 @@ function FormDisplay({
     },
     context: {
       headers: {
-        "X-Auth-Token": session?.user?.token || ""
+        "X-Auth-Token": token || ""
       },
     }
   });
@@ -105,19 +106,19 @@ function FormDisplay({
   console.log('FormDisplay Debug - Query Parameters:', {
     id,
     entity_id,
-    sessionToken: session?.user?.token,
+    sessionToken: token,
     sessionStatus: status,
-    skipCondition: !id || !entity_id || !session?.user?.token,
+    skipCondition: !id || !entity_id || !token,
     skipReasons: {
       noId: !id,
       noEntityId: !entity_id,
-      noToken: !session?.user?.token,
+      noToken: !token,
       sessionData: session
     }
   });
 
   // Additional debugging for useQuery execution
-  console.log('FormDisplay Debug - useQuery will be skipped:', !id || !entity_id || !session?.user?.token);
+  console.log('FormDisplay Debug - useQuery will be skipped:', !id || !entity_id || !token);
 
   // Fetch form data with answers
   const { loading, error, data, refetch } = useQuery(GET_FORM_WITH_ANSWERS, {
@@ -135,7 +136,7 @@ function FormDisplay({
     },
     context: {
       headers: {
-        "X-Auth-Token": session?.user?.token || ""
+        "X-Auth-Token": token || ""
       },
     },
   });
@@ -144,13 +145,13 @@ function FormDisplay({
   useEffect(() => {
     console.log('FormDisplay Debug - useEffect triggered with conditions:', {
       hasSession: !!session,
-      hasToken: !!session?.user?.token,
+      hasToken: !!token,
       hasId: !!id,
       hasEntityId: !!entity_id,
-      canExecuteQuery: !!(session?.user?.token && id && entity_id)
+      canExecuteQuery: !!(token && id && entity_id)
     });
 
-    if (session?.user?.token && id && entity_id) {
+    if (token && id && entity_id) {
       console.log('FormDisplay Debug - Attempting to refetch query...');
       refetch().then((result) => {
         console.log('FormDisplay Debug - Refetch result:', result);
@@ -158,9 +159,20 @@ function FormDisplay({
         console.error('FormDisplay Debug - Refetch error:', error);
       });
     }
-  }, [session, id, entity_id, refetch]);
+  }, [token, id, entity_id, refetch]);
 
-  // Initialize form answers when data is loaded
+  // Re-evaluate visible questions when form answers change
+  useEffect(() => {
+    if (formData && formData.questions && formAnswers && Object.keys(formAnswers).length > 0) {
+      const updatedVisibleQuestions = formData.questions
+        .filter(question => evaluateConditions(question, formAnswers, formData.questions))
+        .map(q => q.id);
+      
+      setVisibleQuestions(updatedVisibleQuestions);
+    }
+  }, [formAnswers, formData]);
+
+  // Initialize form answers from API data is loaded
   const initializeFormAnswers = (formData) => {
     const initialAnswers = {};
 
@@ -267,6 +279,9 @@ function FormDisplay({
           return option?.key || '';
         });
         actualValue = selectedKeys.join(',');
+      } else if (sourceQuestion.type === 'country' || sourceQuestion.type === 'city') {
+        // For country/city fields, check value_entity_id first, then value_text
+        actualValue = sourceAnswer.value_entity_id;
       } else {
         actualValue = sourceAnswer.value || '';
       }
@@ -295,6 +310,14 @@ function FormDisplay({
           break;
         case 'less_than':
           conditionMet = parseFloat(actualValue) < parseFloat(conditionValue);
+          break;
+        case 'is_empty':
+          conditionMet = !actualValue || actualValue === '' || 
+                        (Array.isArray(actualValue) && actualValue.length === 0);
+          break;
+        case 'is_not_empty':
+          conditionMet = actualValue && actualValue !== '' && actualValue !== null && actualValue !== undefined &&
+                        (!Array.isArray(actualValue) || actualValue.length > 0);
           break;
         default:
           conditionMet = false;
@@ -462,7 +485,7 @@ function FormDisplay({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!session?.user?.token) {
+    if (!token) {
       console.error('Authentication token not available');
       setSaveStatus('error');
       setTimeout(() => setSaveStatus(null), 5000);

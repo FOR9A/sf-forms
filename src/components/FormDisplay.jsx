@@ -1,17 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
-
-// Handle both next-translate and next-translate-plugin
-let useTranslation;
-try {
-  useTranslation = require('next-translate/useTranslation').default;
-} catch (error) {
-  // Fallback implementation if the import fails
-  useTranslation = () => ({
-    t: (key) => key,
-    lang: 'en'
-  });
-}
 import { gql, useQuery, useMutation, ApolloProvider } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faSave, faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -52,11 +40,11 @@ function FormDisplay({
   customValidation,
   readOnly = false ,
   token,
-  locale
+  locale,
+  t
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { t } = useTranslation('form');
   
   // Use props or fallback to router query
   const id = formId || router.query.id;

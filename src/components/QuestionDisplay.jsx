@@ -446,6 +446,7 @@ export const QuestionDisplay = ({
                       value={option.id}
                       checked={answerData.selectedOptions?.includes(option.id) || false}
                       onChange={(e) => onCheckboxChange(question.id, option.id, e.target.checked)}
+                      className={cssClasses.checkboxInput || styles['sf-checkbox-input']}
                     />
                     <label htmlFor={`option-${option.id}`}>{getOptionLabel(option)}</label>
                   </div>

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/router';
 
 // Handle both next-translate and next-translate-plugin
 let useTranslation;
@@ -54,9 +53,9 @@ function FormDisplay({
   readOnly = false ,
   token,
   locale,
+  router
 }) {
   const { data: session, status } = useSession();
-  const router = useRouter();
   const { t } = useTranslation('form');
   
   // Use props or fallback to router query

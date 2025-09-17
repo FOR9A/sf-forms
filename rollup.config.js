@@ -9,13 +9,12 @@ import { readFileSync } from 'fs';
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 export default {
-  input: 'src/index.js',
+  input: 'src/index.ts', // or index.tsx if that's your entry
   output: [
     {
       file: packageJson.main,
       format: 'cjs',
-      sourcemap: true,
-      name: 'DynamicForm'
+      sourcemap: true
     },
     {
       file: packageJson.module,
@@ -31,29 +30,24 @@ export default {
     }),
     commonjs(),
     babel({
-      babelHelpers: 'bundled',
+      babelHelpers: 'runtime',
       presets: [
         ['@babel/preset-env', { targets: '> 0.25%, not dead' }],
         ['@babel/preset-react', { runtime: 'automatic' }],
         '@babel/preset-typescript'
       ],
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      exclude: 'node_modules/**'
+      exclude: /node_modules/
     }),
     postcss({
-      extract: true,
+      extract: true, // publish CSS separately OR set inject:true to inline
       minimize: true,
       sourceMap: true
     }),
     terser()
   ],
   external: [
-    'react',
-    'react-dom',
-    '@apollo/client',
-    'next',
     'next-translate/useTranslation',
-    'next-auth/react',
-    'graphql'
+    'next-auth/react'
   ]
 };

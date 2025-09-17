@@ -53,14 +53,13 @@ function FormDisplay({
   readOnly = false ,
   token,
   locale,
-  router
 }) {
   const { data: session, status } = useSession();
   const { t } = useTranslation('form');
   
   // Use props or fallback to router query
-  const id = formId || router.query.id;
-  const entity_id = entityId || router.query.entity_id;
+  const id = formId;
+  const entity_id = entityId;
   
   const [theme, setTheme] = useState('souqfann');
   const [editMode, setEditMode] = useState(!readOnly);

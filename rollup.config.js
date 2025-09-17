@@ -52,7 +52,6 @@ export default {
     'react-dom',
     '@apollo/client',
     'next',
-    'next/router',
     'next-translate/useTranslation',
     'next-auth/react',
     'graphql'

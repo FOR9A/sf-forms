@@ -1,32 +1,10 @@
 "use client";
 import React, { useState, useEffect, useMemo } from 'react';
 
-// Handle both next-translate and next-translate-plugin
-let useTranslation;
-try {
-  useTranslation = require('next-translate/useTranslation').default;
-} catch (error) {
-  // Fallback implementation if the import fails
-  useTranslation = () => ({
-    t: (key) => key,
-    lang: 'en'
-  });
-}
 import { gql, useQuery, useMutation, ApolloProvider } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faSave, faCheck } from '@fortawesome/free-solid-svg-icons';
-// Make next-auth optional
-let useSession;
-try {
-  const nextAuth = require('next-auth/react');
-  useSession = nextAuth.useSession;
-} catch (error) {
-  // Fallback if next-auth is not available
-  useSession = () => ({
-    data: null,
-    status: 'unauthenticated'
-  });
-}
+
 import QuestionDisplay from './QuestionDisplay.jsx';
 import { GET_FORM_WITH_ANSWERS } from '../graphql/queries.js';
 import styles from '../styles/form-display.module.scss';
@@ -53,9 +31,8 @@ function FormDisplay({
   readOnly = false ,
   token,
   locale,
+  session
 }) {
-  const { data: session, status } = useSession();
-  const { t } = useTranslation('form');
   
   // Use props or fallback to router query
   const id = formId;
@@ -591,7 +568,7 @@ function FormDisplay({
     return (
       <div className={`${cssClasses.loadingContainer || styles['sf-loading-container']}`}>
         <FontAwesomeIcon icon={faSpinner} spin size="2x" />
-        <p>{t('loading')}</p>
+        <p>loading</p>
       </div>
     );
   }
@@ -599,7 +576,7 @@ function FormDisplay({
   if (error) {
     return (
       <div className={`${cssClasses.errorContainer || styles['sf-error-container']}`}>
-        <h2>{t('error-loading-form')}</h2>
+        <h2>error-loading-form</h2>
         <p>{error.message}</p>
       </div>
     );
@@ -629,7 +606,6 @@ console.log("formData",formData)
                         onCheckboxChange={onCheckboxChange}
                         validationErrors={validationErrors}
                         onCountryChange={onCountryChange}
-                        t={t}
                         cssClasses={cssClasses}
                       />
                     </div>
@@ -652,16 +628,16 @@ console.log("formData",formData)
                   {saveStatus === 'success' && (
                     <>
                       <FontAwesomeIcon icon={faCheck} size="sm" />
-                      <span>{t('saved-successfully')}</span>
+                      <span>saved-successfully</span>
                     </>
                   )}
                   {saveStatus === 'error' && (
-                    <span>{t('save-error')}</span>
+                    <span>save-error</span>
                   )}
                   {saveStatus === 'saving' && (
                     <>
                       <FontAwesomeIcon icon={faSpinner} spin size="sm" />
-                      <span>{t('saving')}</span>
+                      <span>saving</span>
                     </>
                   )}
                 </div>
@@ -670,7 +646,7 @@ console.log("formData",formData)
           </div>
         ) : (
           <div className={`${cssClasses.noData || styles['sf-no-data']}`}>
-            <p>{t('no-form-data')}</p>
+            <p>no-form-data</p>
           </div>
         )}
       </div>

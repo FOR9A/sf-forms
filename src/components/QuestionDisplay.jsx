@@ -34,7 +34,6 @@ export const QuestionDisplay = ({
   onCheckboxChange, 
   validationErrors, 
   onCountryChange, 
-  t,
   cssClasses = {},
   uploadEndpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT
 }) => {
@@ -672,7 +671,7 @@ export const QuestionDisplay = ({
                 <div className={cssClasses.errorMessage || styles['sf-error-message']}>{validationErrors[question.id]}</div>
               )}
               {loadingCities && (
-                <div className={cssClasses.helperText || styles['sf-helper-text']}>{t('loading-cities')}</div>
+                <div className={cssClasses.helperText || styles['sf-helper-text']}>loading-cities</div>
               )}
             </>
           ) : (

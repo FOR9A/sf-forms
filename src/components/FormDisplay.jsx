@@ -2,9 +2,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { gql, useQuery, useMutation } from '@apollo/client';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faCheck } from '@fortawesome/free-solid-svg-icons';
-
 import QuestionDisplay from './QuestionDisplay.jsx';
 import { GET_FORM_WITH_ANSWERS } from '../graphql/queries.js';
 import styles from '../styles/form-display.module.scss';
@@ -567,7 +564,6 @@ function FormDisplay({
   if (loading) {
     return (
       <div className={`${cssClasses.loadingContainer || styles['sf-loading-container']}`}>
-        <FontAwesomeIcon icon={faSpinner} spin size="2x" />
         <p>loading</p>
       </div>
     );
@@ -618,7 +614,6 @@ console.log("formData",formData)
                   className={`${cssClasses.submitButton || styles['sf-btn-primary']} ${saveLoading ? styles['sf-loading'] : ''}`}
                   disabled={saveLoading}
                 >
-                  {saveLoading && <FontAwesomeIcon icon={faSpinner} size="sm" />}
                   {!saveLoading && t('save-form')}
                 </button>
               )}
@@ -627,7 +622,6 @@ console.log("formData",formData)
                 <div className={`${cssClasses.saveStatus || styles['sf-save-status']} ${saveStatus === 'success' ? styles['sf-success'] : saveStatus === 'error' ? styles['sf-error'] : styles['sf-saving']}`}>
                   {saveStatus === 'success' && (
                     <>
-                      <FontAwesomeIcon icon={faCheck} size="sm" />
                       <span>saved-successfully</span>
                     </>
                   )}
@@ -636,7 +630,6 @@ console.log("formData",formData)
                   )}
                   {saveStatus === 'saving' && (
                     <>
-                      <FontAwesomeIcon icon={faSpinner} spin size="sm" />
                       <span>saving</span>
                     </>
                   )}

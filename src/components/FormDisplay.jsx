@@ -431,10 +431,10 @@ export default function FormDisplay({
         if (isEmpty) {
           if (question.error_message) {
             errors[question.id] = locale === 'ar'
-              ? (question.error_message.ar || question.error_message.en || t('field-required'))
-              : (question.error_message[locale] || question.error_message.en || t('field-required'));
+              ? (question.error_message.ar || question.error_message.en )
+              : (question.error_message[locale] || question.error_message.en );
           } else {
-            errors[question.id] = t('field-required');
+            errors[question.id] = "field-required";
           }
           isValid = false;
         }
@@ -614,7 +614,7 @@ console.log("formData",formData)
                   className={`${cssClasses.submitButton || styles['sf-btn-primary']} ${saveLoading ? styles['sf-loading'] : ''}`}
                   disabled={saveLoading}
                 >
-                  {!saveLoading && t('save-form')}
+                  {!saveLoading && <p>save-form</p>}
                 </button>
               )}
 

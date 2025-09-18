@@ -655,7 +655,7 @@ export default function QuestionDisplay  ({
                 disabled={loadingCities}
               >
                 <option value="" defaultValue={true}>
-                  {loadingCities ? t('loading-cities') : placeholder}
+                  {loadingCities ? "loading-cities" : placeholder}
                 </option>
                 {!loadingCities && cityList.length > 0 ? (
                   cityList.map((city, i) => (

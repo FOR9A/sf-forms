@@ -1,9 +1,9 @@
 "use client";
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { gql, useQuery, useMutation, ApolloProvider } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faSave, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 import QuestionDisplay from './QuestionDisplay.jsx';
 import { GET_FORM_WITH_ANSWERS } from '../graphql/queries.js';

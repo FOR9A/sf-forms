@@ -1,3 +1,4 @@
+"use client";
 // Main entry point for the dynamic form package
 export { default as FormDisplay } from './components/FormDisplay.jsx';
 export { default as FormDisplayWrapper } from './components/FormDisplayWrapper.jsx';

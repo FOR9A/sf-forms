@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client/core';
 import QuestionDisplay from './QuestionDisplay.jsx';
 import { GET_FORM_WITH_ANSWERS } from '../graphql/queries.js';
 import styles from '../styles/form-display.module.scss';

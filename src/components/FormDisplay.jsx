@@ -17,7 +17,7 @@ const ADD_UPDATE_FORM_ANSWER = gql`
   }
 `;
 
-function FormDisplay({ 
+export default function FormDisplay({ 
   formId, 
   entityId, 
   cssClasses = {}, 
@@ -646,5 +646,3 @@ console.log("formData",formData)
     </div>
   );
 }
-
-export default FormDisplay;

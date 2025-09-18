@@ -23,7 +23,7 @@ export const QUESTION_TYPES = [
 ];
 
 // Component to render different question types
-export const QuestionDisplay = ({ 
+export default function QuestionDisplay  ({ 
   question, 
   locale, 
   editMode, 
@@ -34,7 +34,7 @@ export const QuestionDisplay = ({
   onCountryChange, 
   cssClasses = {},
   uploadEndpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT
-}) => {
+})   {
   const [countries, setCountries] = useState([]);
   const [cityList, setCityList] = useState([]);
   const [country, setCountry] = useState('');
@@ -705,4 +705,3 @@ export const QuestionDisplay = ({
   }
 };
 
-export default QuestionDisplay;

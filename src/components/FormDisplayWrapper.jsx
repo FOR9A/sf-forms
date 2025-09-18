@@ -7,7 +7,7 @@ import FormDisplay from './FormDisplay.jsx';
 /**
  * Wrapper component that provides Apollo Client with configurable GraphQL endpoint
  */
-function FormDisplayWrapper({ 
+export default function FormDisplayWrapper({ 
   graphqlEndpoint = 'http://127.0.0.1:8000/graphql',
   authToken = null,
   ...props 
@@ -23,5 +23,3 @@ function FormDisplayWrapper({
     </ApolloProvider>
   );
 }
-
-export default FormDisplayWrapper;

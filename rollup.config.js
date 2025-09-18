@@ -27,6 +27,7 @@ export default {
     peerDepsExternal(),
     resolve({
       browser: true,
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
       dedupe: ['react', 'react-dom']
     }),
     commonjs(),

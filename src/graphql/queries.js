@@ -75,12 +75,14 @@ export const GET_FORM_WITH_ANSWERS = gql`
   }
 `;
 
-export const ADD_UPDATE_FORM_ANSWER = gql`
-  mutation AddUpdateFormAnswer($input: FormAnswerInput!, $id: ID) {
-    addUpdateFormAnswer(input: $input, id: $id) {
+export const ADD_UPDATE_BULK_FORM_ANSWERS = gql`
+  mutation AddUpdateBulkFormAnswers($input: BulkFormAnswerInput!) {
+    addUpdateBulkFormAnswers(input: $input) {
       success
       message
-      answer_id
+      submission_id
+      answers_count
+      failed_answers
     }
   }
 `;

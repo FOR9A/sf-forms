@@ -3,19 +3,10 @@ import React, { useState, useEffect } from 'react';
 
 import { useQuery, useMutation, gql } from '@apollo/client';
 import QuestionDisplay from './QuestionDisplay.jsx';
-import { GET_FORM_WITH_ANSWERS } from '../graphql/queries.js';
+import { GET_FORM_WITH_ANSWERS, ADD_UPDATE_BULK_FORM_ANSWERS } from '../graphql/queries.js';
 import styles from '../styles/form-display.module.scss';
 
-// GraphQL mutation to save form answers
-const ADD_UPDATE_FORM_ANSWER = gql`
-  mutation AddUpdateFormAnswer($input: FormAnswerInput!, $id: ID) {
-    addUpdateFormAnswer(input: $input, id: $id) {
-      success
-      message
-      answer_id
-    }
-  }
-`;
+// GraphQL mutation imported from queries.js
 
 export default function FormDisplay({ 
   formId, 
@@ -57,13 +48,15 @@ export default function FormDisplay({
   }, [themeConfig]);
 
   // GraphQL mutation hooks
-  const [addUpdateFormAnswer, { loading: saveLoading }] = useMutation(ADD_UPDATE_FORM_ANSWER, {
+  const [addUpdateBulkFormAnswers, { loading: saveLoading }] = useMutation(ADD_UPDATE_BULK_FORM_ANSWERS, {
     onCompleted: (data) => {
+      console.log('Bulk form answers saved:', data);
       setSaveStatus('success');
       if (onSaveSuccess) onSaveSuccess(data);
       setTimeout(() => setSaveStatus(null), 3000);
     },
     onError: (error) => {
+      console.error('Error saving bulk form answers:', error);
       setSaveStatus('error');
       if (onSaveError) onSaveError(error);
       setTimeout(() => setSaveStatus(null), 5000);
@@ -472,90 +465,115 @@ export default function FormDisplay({
     setSaveStatus('saving');
 
     try {
-      const answerPromises = Object.entries(formAnswers).map(async ([questionId, data]) => {
+      // Prepare bulk answers array
+      const answers = [];
+
+      Object.entries(formAnswers).forEach(([questionId, data]) => {
         const question = formData.questions.find(q => q.id === questionId);
-        if (!question) return null;
+        if (!question) return;
 
-        if (question.is_user_visible === false) return null;
-        if (['header', 'subheader', 'paragraph'].includes(question.type)) return null;
+        if (question.is_user_visible === false) return;
+        if (['header', 'subheader', 'paragraph'].includes(question.type)) return;
 
+        // Determine value type based on question type
         let valueType = 'text';
         if (question.type === 'number') valueType = 'number';
-        else if (question.type === 'checkbox' || question.type === 'radio' || question.type === 'select') valueType = 'option';
+        else if (question.type === 'checkbox' || question.type === 'radio' || question.type === 'select') valueType = 'text'; // Keep as text since we're storing option values
         else if (question.type === 'country') valueType = 'country';
         else if (question.type === 'city') valueType = 'city';
         else if (question.type === 'file') valueType = 'file';
         else if (question.type === 'date') valueType = 'date';
+        else if (question.type === 'datetime') valueType = 'datetime';
+        else if (question.type === 'boolean') valueType = 'boolean';
 
-        const mutationInput = {
-          form_id: id,
+        const answerInput = {
           question_id: questionId,
-          entity_id: entity_id || null,
           value_type: valueType
         };
 
         // Add appropriate value fields based on question type
         if (question.type === 'checkbox') {
-          mutationInput.selected_option_ids = data.selectedOptions;
-          mutationInput.value_text = data.value;
+          answerInput.selected_option_ids = data.selectedOptions || [];
+          answerInput.value_text = data.value || '';
         } else if (question.type === 'radio' || question.type === 'select') {
-          mutationInput.selected_option_ids = data.selectedOption ? [data.selectedOption] : [];
-          mutationInput.value_text = data.value;
+          answerInput.selected_option_ids = data.selectedOption ? [data.selectedOption] : [];
+          answerInput.value_text = data.value || '';
         } else if (question.type === 'country') {
-          mutationInput.value_text = data.value;
+          answerInput.value_text = data.value || '';
           if (data.selectedOption) {
-            mutationInput.value_entity_id = data.selectedOption;
+            answerInput.value_entity_id = data.selectedOption;
           }
         } else if (question.type === 'city') {
-          mutationInput.value_text = data.value;
+          answerInput.value_text = data.value || '';
           if (data.value_entity_id) {
-            mutationInput.value_entity_id = data.value_entity_id;
+            answerInput.value_entity_id = data.value_entity_id;
           }
         } else if (question.type === 'number') {
-          mutationInput.value_number = parseFloat(data.value) || 0;
-          mutationInput.value_text = data.value;
+          answerInput.value_number = parseFloat(data.value) || 0;
+          answerInput.value_text = data.value || '';
         } else if (question.type === 'file') {
-          mutationInput.value_text = data.filePath || data.value;
-          mutationInput.file_path = data.filePath;
+          answerInput.value_text = data.filePath || data.value || '';
+          if (data.filePath) {
+            answerInput.file_path = data.filePath;
+          }
         } else if (question.type === 'date') {
           const dateValue = data.value;
           if (dateValue && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
-            mutationInput.value_date = dateValue;
-            mutationInput.value_text = dateValue;
+            answerInput.value_date = dateValue;
+            answerInput.value_text = dateValue;
           } else if (dateValue) {
             try {
               const date = new Date(dateValue);
               if (!isNaN(date.getTime())) {
                 const formattedDate = date.toISOString().split('T')[0];
-                mutationInput.value_date = formattedDate;
-                mutationInput.value_text = formattedDate;
+                answerInput.value_date = formattedDate;
+                answerInput.value_text = formattedDate;
               }
             } catch (e) {
               console.error('Error formatting date:', e);
-              mutationInput.value_date = dateValue;
-              mutationInput.value_text = dateValue;
+              answerInput.value_date = dateValue;
+              answerInput.value_text = dateValue;
             }
           }
+        } else if (question.type === 'boolean') {
+          answerInput.value_boolean = Boolean(data.value);
+          answerInput.value_text = data.value ? 'true' : 'false';
         } else {
-          mutationInput.value_text = data.value;
+          answerInput.value_text = data.value || '';
         }
 
-        const existingAnswer = formData.questions.find(q => q.id === questionId)?.answer;
-        const answerId = existingAnswer?.id || null;
-
-        return addUpdateFormAnswer({
-          variables: {
-            input: mutationInput,
-            id: answerId
-          }
-        });
+        answers.push(answerInput);
       });
 
-      await Promise.all(answerPromises.filter(Boolean));
-      setSaveStatus('success');
-      setTimeout(() => setSaveStatus(null), 3000);
+      // Prepare bulk mutation input
+      const bulkInput = {
+        form_id: id,
+        entity_id: entity_id || null,
+        answers: answers
+      };
+
+      console.log('Submitting bulk form answers:', bulkInput);
+
+      // Execute bulk mutation
+      const result = await addUpdateBulkFormAnswers({
+        variables: {
+          input: bulkInput
+        }
+      });
+
+      console.log('Bulk form submission result:', result);
+
+      if (result.data?.addUpdateBulkFormAnswers?.success) {
+        setSaveStatus('success');
+        setTimeout(() => setSaveStatus(null), 3000);
+      } else {
+        console.error('Bulk form submission failed:', result.data?.addUpdateBulkFormAnswers?.message);
+        setSaveStatus('error');
+        setTimeout(() => setSaveStatus(null), 5000);
+      }
+
     } catch (error) {
-      console.error('Error saving form answers:', error);
+      console.error('Error saving bulk form answers:', error);
       setSaveStatus('error');
       setTimeout(() => setSaveStatus(null), 5000);
     }

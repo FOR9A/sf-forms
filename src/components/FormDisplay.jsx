@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import { useQuery, useMutation, gql } from '@apollo/client';
 import QuestionDisplay from './QuestionDisplay.jsx';
-import { GET_FORM_WITH_ANSWERS, ADD_UPDATE_BULK_FORM_ANSWERS } from '../graphql/queries.js';
+import {ADD_UPDATE_BULK_FORM_ANSWERS } from '../graphql/queries.js';
 import styles from '../styles/form-display.module.scss';
 
 // GraphQL mutation imported from queries.js
@@ -81,30 +81,6 @@ export default function FormDisplay({
       noToken: !token,
       sessionData: session
     }
-  });
-
-  // Additional debugging for useQuery execution
-  console.log('FormDisplay Debug - useQuery will be skipped:', !id || !entity_id || !token);
-
-  // Fetch form data with answers
-  const { loading, error, data, refetch } = useQuery(GET_FORM_WITH_ANSWERS, {
-    variables: { form_id: id, entity_id: entity_id, preview: false },
-    
-    onCompleted: (data) => {
-      console.log('GET_FORM_WITH_ANSWERS completed successfully:', data);
-      if (data?.getFormWithAnswers) {
-        setFormData(data.getFormWithAnswers);
-        initializeFormAnswers(data.getFormWithAnswers);
-      }
-    },
-    onError: (error) => {
-      console.error('GET_FORM_WITH_ANSWERS error:', error);
-    },
-    context: {
-      headers: {
-        "X-Auth-Token": token || ""
-      },
-    },
   });
   
   // Monitor query conditions and refetch when they become available

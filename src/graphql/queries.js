@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_FORM_WITH_ANSWERS = gql`
-  query getFormWithAnswers($form_id: ID!, $entity_id: ID!, $preview: Boolean) {
-    getFormWithAnswers(form_id: $form_id, entity_id: $entity_id, preview: $preview) {
+  query getFormWithAnswers($form_id: ID!, $submission_id: ID, $preview: Boolean) {
+    getFormWithAnswers(form_id: $form_id, submission_id: $submission_id, preview: $preview) {
       id
       name
       model_type

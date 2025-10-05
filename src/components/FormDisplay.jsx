@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 import { useQuery, useMutation, gql } from '@apollo/client';
 import QuestionDisplay from './QuestionDisplay.jsx';
-import {ADD_UPDATE_BULK_FORM_ANSWERS } from '../graphql/queries.js';
+import { GET_FORM_WITH_ANSWERS, ADD_UPDATE_BULK_FORM_ANSWERS } from '../graphql/queries.js';
 import styles from '../styles/form-display.module.scss';
 
 // GraphQL mutation imported from queries.js
@@ -11,6 +12,7 @@ import styles from '../styles/form-display.module.scss';
 export default function FormDisplay({ 
   formId, 
   entityId, 
+  submissionId,
   cssClasses = {}, 
   themeConfig = {},
   onSaveSuccess,
@@ -21,10 +23,12 @@ export default function FormDisplay({
   locale,
   session
 }) {
+  const router = useRouter();
   
   // Use props or fallback to router query
   const id = formId;
   const entity_id = entityId;
+  const submission_id = submissionId;
   
   const [theme, setTheme] = useState('souqfann');
   const [editMode, setEditMode] = useState(!readOnly);
@@ -68,19 +72,26 @@ export default function FormDisplay({
     }
   });
 
-  // Debug logging for query parameters
-  console.log('FormDisplay Debug - Query Parameters:', {
-    id,
-    entity_id,
-    sessionToken: token,
-    sessionStatus: status,
-    skipCondition: !id || !entity_id || !token,
-    skipReasons: {
-      noId: !id,
-      noEntityId: !entity_id,
-      noToken: !token,
-      sessionData: session
-    }
+
+  // Fetch form data with answers
+  const { loading, error, data, refetch } = useQuery(GET_FORM_WITH_ANSWERS, {
+    variables: { form_id: id, submission_id: submission_id, preview: false },
+    
+    onCompleted: (data) => {
+      console.log('GET_FORM_WITH_ANSWERS completed successfully:', data);
+      if (data?.getFormWithAnswers) {
+        setFormData(data.getFormWithAnswers);
+        initializeFormAnswers(data.getFormWithAnswers);
+      }
+    },
+    onError: (error) => {
+      console.error('GET_FORM_WITH_ANSWERS error:', error);
+    },
+    context: {
+      headers: {
+        "X-Auth-Token": token || ""
+      },
+    },
   });
   
   // Monitor query conditions and refetch when they become available
@@ -524,6 +535,7 @@ export default function FormDisplay({
       // Prepare bulk mutation input
       const bulkInput = {
         form_id: id,
+        submission_id: submission_id,
         entity_id: entity_id || null,
         answers: answers
       };
@@ -540,6 +552,20 @@ export default function FormDisplay({
       console.log('Bulk form submission result:', result);
 
       if (result.data?.addUpdateBulkFormAnswers?.success) {
+        const returnedSubmissionId = result.data.addUpdateBulkFormAnswers.submission_id;
+        
+        // If we don't have a submission_id in the URL but got one from the API, update the URL
+        if (!submission_id && returnedSubmissionId) {
+          console.log('Adding submission_id to URL:', returnedSubmissionId);
+          
+          // Create new URL with submission_id parameter
+          const currentUrl = new URL(window.location.href);
+          currentUrl.searchParams.set('submission_id', returnedSubmissionId);
+          
+          // Update the URL without causing a page reload
+          router.push(currentUrl.pathname + currentUrl.search, undefined, { shallow: true });
+        }
+        
         setSaveStatus('success');
         setTimeout(() => setSaveStatus(null), 3000);
       } else {

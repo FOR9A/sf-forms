@@ -437,6 +437,7 @@ export default function FormDisplay({
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("handleSubmit Called");
 
     if (!token) {
       console.error('Authentication token not available');
@@ -445,9 +446,9 @@ export default function FormDisplay({
       return;
     }
 
-    if (!validateForm()) {
-      return;
-    }
+    // if (!validateForm()) {
+    //   return;
+    // }
 
     setSaveStatus('saving');
 

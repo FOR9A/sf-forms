@@ -434,13 +434,20 @@ export default function FormDisplay({
 
         if (isEmpty) {
           console.log("⚠️ Field is empty - adding error");
+          let errorMessage = "field-required";
+          
           if (question.error_message) {
-            errors[question.id] = locale === 'ar'
+            const customError = locale === 'ar'
               ? (question.error_message.ar || question.error_message.en )
               : (question.error_message[locale] || question.error_message.en );
-          } else {
-            errors[question.id] = "field-required";
+            
+            // Only use custom error if it's not empty
+            if (customError && customError.trim() !== '') {
+              errorMessage = customError;
+            }
           }
+          
+          errors[question.id] = errorMessage;
           console.log(`Error set: ${errors[question.id]}`);
           isValid = false;
         }

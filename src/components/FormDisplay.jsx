@@ -371,16 +371,35 @@ export default function FormDisplay({
 
   // Validate form
   const validateForm = () => {
+    console.log("🔍 validateForm CALLED");
+    console.log("📋 formData:", formData);
+    console.log("📝 formAnswers:", formAnswers);
+    console.log("👁️ visibleQuestions:", visibleQuestions);
+    
     const errors = {};
     let isValid = true;
 
     formData.questions.forEach(question => {
-      if (question.is_user_visible === false) return;
-      if (!visibleQuestions.includes(question.id)) return;
-      if (['header', 'subheader', 'paragraph'].includes(question.type)) return;
+      console.log(`\n--- Validating Question ID: ${question.id} ---`);
+      console.log("Question:", question);
+      
+      if (question.is_user_visible === false) {
+        console.log("❌ Skipped: is_user_visible is false");
+        return;
+      }
+      if (!visibleQuestions.includes(question.id)) {
+        console.log("❌ Skipped: not in visibleQuestions");
+        return;
+      }
+      if (['header', 'subheader', 'paragraph'].includes(question.type)) {
+        console.log("❌ Skipped: display-only type");
+        return;
+      }
 
       if (question.required) {
+        console.log("✅ Question is required");
         const answer = formAnswers[question.id];
+        console.log("Answer:", answer);
         let isEmpty = false;
 
         switch (question.type) {
@@ -391,24 +410,30 @@ export default function FormDisplay({
           case 'date':
           case 'time':
             isEmpty = !answer.value || answer.value.trim() === '';
+            console.log(`isEmpty check (text-based): ${isEmpty}`);
             break;
           case 'select':
           case 'radio':
           case 'country':
           case 'city':
             isEmpty = !answer.selectedOption;
+            console.log(`isEmpty check (select-based): ${isEmpty}`);
             break;
           case 'checkbox':
             isEmpty = !answer.selectedOptions || answer.selectedOptions.length === 0;
+            console.log(`isEmpty check (checkbox): ${isEmpty}`);
             break;
           case 'file':
             isEmpty = !answer.file && !answer.filePath;
+            console.log(`isEmpty check (file): ${isEmpty}`);
             break;
           default:
             isEmpty = !answer.value || answer.value.trim() === '';
+            console.log(`isEmpty check (default): ${isEmpty}`);
         }
 
         if (isEmpty) {
+          console.log("⚠️ Field is empty - adding error");
           if (question.error_message) {
             errors[question.id] = locale === 'ar'
               ? (question.error_message.ar || question.error_message.en )
@@ -416,20 +441,27 @@ export default function FormDisplay({
           } else {
             errors[question.id] = "field-required";
           }
+          console.log(`Error set: ${errors[question.id]}`);
           isValid = false;
         }
       }
 
       // Custom validation
       if (customValidation && customValidation[question.id]) {
+        console.log("🔧 Running custom validation");
         const customError = customValidation[question.id](formAnswers[question.id], formAnswers);
         if (customError) {
+          console.log("⚠️ Custom validation error:", customError);
           errors[question.id] = customError;
           isValid = false;
         }
       }
     });
 
+    console.log("\n📊 VALIDATION RESULTS:");
+    console.log("Errors:", errors);
+    console.log("isValid:", isValid);
+    
     setValidationErrors(errors);
     return isValid;
   };
@@ -446,9 +478,9 @@ export default function FormDisplay({
       return;
     }
 
-    // if (!validateForm()) {
-    //   return;
-    // }
+    if (!validateForm()) {
+      return;
+    }
 
     setSaveStatus('saving');
 
